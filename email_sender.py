@@ -1,10 +1,8 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from getpass import getpass
 from os import path
 import smtplib
 
-# from decouple import config
 from openpyxl import load_workbook
 
 
@@ -16,14 +14,12 @@ class ExcelReader:
         self.n_rows = self.count_rows()
 
     def load_file(self):
-        excel_file = load_workbook(self.path_file)
         return load_workbook(self.path_file).active
 
     def count_rows(self):
         for nrow, cell in enumerate(self.workbook['A']):
             if cell.value is None:
                 return nrow
-                break
 
     def count_columns(self):
         return self.workbook.max_column
@@ -36,13 +32,13 @@ class ExcelReader:
 
 
 class Email:
-    def __init__(self, transmitter, passwd, information_student):
+    def __init__(self, transmitter, passwd, contact_info):
         self.transmitter = transmitter
         self.password = passwd
-        self.receiver = information_student[0]
-        self.receiver_name = information_student[1]
+        self.receiver = contact_info[0]
+        self.receiver_name = contact_info[1]
 
-    def create_message(self, grades):
+    def create_message(self, data):
         message = MIMEMultipart()
         message['From'] = self.transmitter
         message['To'] = self.receiver
@@ -59,11 +55,11 @@ class Email:
 
                         En términos generales, sus notas son: <br>
                         <ul>
-                            <li type="disc"><b>NOTA1</b>: {round(grades[1], 1)}</li>
-                            <li type="disc"><b>NOTA2</b>: {round(grades[2], 1)}</li>
+                            <li type="disc"><b>NOTA1</b>: {round(data[1], 1)}</li>
+                            <li type="disc"><b>NOTA2</b>: {round(data[2], 1)}</li>
                         </ul>
 
-                        La nota total del [SEMESTRE-PERIODO, etc] es: {round(grades[0], 1)} <br> <br>
+                        La nota total del [SEMESTRE-PERIODO, etc] es: {round(data[0], 1)} <br> <br>
 
                         <br> <br>
                         </p
@@ -79,7 +75,6 @@ class Email:
         server.ehlo()
         server.starttls()
         server.login(self.transmitter, self.password)
-
         server.sendmail(self.transmitter, self.receiver, text)
         server.quit()
 
@@ -87,15 +82,14 @@ class Email:
 if __name__ == '__main__':
     email_address = input('Enter your email: ')
     passwd = input('Enter your password: ')
-    # passwd = getpass('Enter your password: ')
     file_path = input('Enter file path: ')
 
     if path.isfile(file_path):
         file = ExcelReader(file_path)
         for i in range(1, file.n_rows + 1):
-            information_student, grades = file.extract_data(i)
-            email = Email(email_address, passwd, information_student)
-            email.send_mail(email.create_message(grades))
-            print('Email send to ', information_student[1])
+            contact_info, data = file.extract_data(i)
+            email = Email(email_address, passwd, contact_info)
+            email.send_mail(email.create_message(data))
+            print('Email send to ', contact_info[1])
     else:
         print("Error, the file does not exists")
