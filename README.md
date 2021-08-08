@@ -49,7 +49,8 @@ html_body = f'''
          	<body>
                 Good morning, {self.receiver_name}
 
-                <p> Below are the programming course notes. The global grade is divided 				as follows: Examen (50%) y Workshop (50%). <br> <br>
+                <p> Below are the programming course notes. The global grade is divided 				
+                as follows: Examen (50%) y Workshop (50%). <br> <br>
 
                 In general, your notes are: <br>
                 <ul>
