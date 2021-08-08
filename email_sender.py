@@ -25,10 +25,10 @@ class ExcelReader:
         return self.workbook.max_column
 
     def extract_data(self, index):
-        data_student = []
+        excel_data = []
         for row in self.workbook[index]:
-            data_student.append(row.value)
-        return data_student[:2], data_student[2:]
+            excel_data.append(row.value)
+        return excel_data[:2], excel_data[2:]
 
 
 class Email:
@@ -46,29 +46,27 @@ class Email:
 
         html_body = f'''
                     <html>
-                        <head> </head>
-                        <body>
-                        Hola, {self.receiver_name}
+         	            <head> </head>
+         	            <body>
+                            Good morning, {self.receiver_name}
 
-                        <p> A continuación presento las notas del [SEMESTRE-PERIODO, etc]. La nota global se <br>
-                        divide de la siguiente manera: [NOTA1] (X%) y [NOTA1] (X%). <br> <br>
+                            <p> Below are the programming course notes. The global grade is divided 				
+                            as follows: Examen (50%) y Workshop (50%). <br> <br>
 
-                        En términos generales, sus notas son: <br>
-                        <ul>
-                            <li type="disc"><b>NOTA1</b>: {round(data[1], 1)}</li>
-                            <li type="disc"><b>NOTA2</b>: {round(data[2], 1)}</li>
-                        </ul>
+                            In general, your notes are: <br>
+                            <ul>
+                                <li type="disc"><b>Examen</b>: {data[1]}</li>
+                                <li type="disc"><b>Workshop</b>: {data[2]}</li>
+                            </ul>
 
-                        La nota total del [SEMESTRE-PERIODO, etc] es: {round(data[0], 1)} <br> <br>
-
-                        <br> <br>
-                        </p
+                            The total grade for the course is: {data[0]} <br> <br>
+                            <br> <br>
+                            </p
                         </body>
                     </html>
                     '''
         message.attach(MIMEText(html_body, 'html'))
-        text = message.as_string()
-        return text
+        return message.as_string()
 
     def send_mail(self, text):
         server = smtplib.SMTP('smtp.gmail.com', 587)
