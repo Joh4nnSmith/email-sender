@@ -9,9 +9,9 @@ Python script to automate the sending of emails with data that is read from exce
 - Works with gmail accounts
 - Send email messages in HTML markup
 - Gmail account credentials are requested in the execution of the script
-- The data is read from excel files (* .xlsx)
+- The data is read from excel files (only works with xlsx format)
 
-### Installation
+### Installation & run
 
 Create a Python3 virtual environment and activate it:
 
@@ -23,7 +23,7 @@ source venv/bin/activate
 Clone the GitHub repo:
 
 ```git
-git clone https://github.com/lnxg33k/email-header-analyzer.git
+git@github.com:Joh4nnSmith/email-sender.git
 ```
 
 Install Python dependencies:
@@ -33,13 +33,53 @@ cd email-sender
 pip3 install -r requirements.txt
 ```
 
-### Execution
+Open the `email_sender.py` file and edit the html section of the email body:
 
+> **self.receiver_name -** Name read from excel file, do not modify
+>
+> **data[0], data[1], data[N]** - Organize according to email structure
 
+```python
+# Create_message function of the Email class
+# Example with sending grades to students
 
-Run the script
+html_body = f'''
+     	<html>
+         	<head> </head>
+         	<body>
+                Good morning, {self.receiver_name}
 
+                <p> Below are the programming course notes. The global grade is divided 				as follows: Examen (50%) y Workshop (50%). <br> <br>
+
+                In general, your notes are: <br>
+                <ul>
+                    <li type="disc"><b>Examen</b>: {data[1]}</li>
+                    <li type="disc"><b>Workshop</b>: {data[2]}</li>
+                </ul>
+
+                The total grade for the course is: {data[0]} <br> <br>
+                <br> <br>
+                </p
+      		</body>
+   		</html>
+        '''
+```
+
+Save changes and run the script:
+
+```python
 `python3 email-sender.py`
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
